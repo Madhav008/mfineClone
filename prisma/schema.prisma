@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model City {
+  id      Int       @id @default(autoincrement())
+  name    String
+  state   String
+  Address Address[]
+}
+
+model Country {
+  id      Int       @id @default(autoincrement())
+  name    String
+  code    String
+  Address Address[]
+}
+
+model UserProfile {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  email       String        @unique
+  name        String
+  phone       String
+  password    String        @default("1223")
+  gender      String
+  role        Role          @default(USER)
+  DoctorInfo  DoctorInfo[]
+  Appointment Appointment[]
+}
+
+model Address {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  published     Boolean     @default(false)
+  name          String      @db.VarChar(255)
+  country       Country     @relation(fields: [countryId], references: [id])
+  city          City        @relation(fields: [cityId], references: [id])
+  streetAddress String
+  countryId     Int
+  cityId        Int
+  Hospitals     Hospitals[]
+}
+
+model Category {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  speciality String
+  DoctorInfo DoctorInfo[]
+}
+
+model Hospitals {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  name       String
+  imageUrl   String
+  latitude   Float
+  longitude  Float
+  address    Address      @relation(fields: [addressId], references: [id])
+  addressId  Int
+  DoctorInfo DoctorInfo[]
+}
+
+model DoctorInfo {
+  id                   Int                    @id @default(autoincrement())
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  user                 UserProfile            @relation(fields: [userId], references: [id])
+  startTime            String
+  EndTime              String
+  fees                 Int
+  available            Boolean
+  category             Category               @relation(fields: [categoryId], references: [id])
+  workDay              Day[]
+  hospital             Hospitals              @relation(fields: [hospitalId], references: [id])
+  userId               Int
+  categoryId           Int
+  hospitalId           Int
+  Appointment          Appointment[]
+  DotorWithdrawRequest DotorWithdrawRequest[]
+  DoctorWallet         DoctorWallet?
+}
+
+model Day {
+  id           Int         @id @default(autoincrement())
+  day          String
+  DoctorInfo   DoctorInfo? @relation(fields: [doctorInfoId], references: [id])
+  doctorInfoId Int?
+}
+
+model DoctorWallet {
+  id           Int         @id @default(autoincrement())
+  amout        String
+  DoctorInfo   DoctorInfo? @relation(fields: [doctorInfoId], references: [id])
+  doctorInfoId Int?
+}
+
+model Appointment {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  bookingStatus Boolean     @default(false)
+  paymentStatus Boolean     @default(false)
+  user          UserProfile @relation(fields: [userId], references: [id])
+  doctor        DoctorInfo  @relation(fields: [doctorId], references: [id])
+  time          String
+  userId        Int
+  doctorId      Int
+}
+
+model DotorWithdrawRequest {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  status       Boolean    @default(false)
+  time         String     @db.VarChar(255)
+  transId      String
+  upi          String
+  accountNo    String
+  doctor       DoctorInfo @relation(fields: [doctorInfoId], references: [id])
+  doctorInfoId Int
+}
+
+enum Role {
+  USER
+  DOCTOR
+  ADMIN
+}

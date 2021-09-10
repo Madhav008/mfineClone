@@ -1,0 +1,206 @@
+GET http://localhost:3000/api/user/ 
+
+###
+GET http://localhost:3000/api/user/5
+
+
+###
+DELETE http://localhost:3000/api/user/5
+
+
+###
+POST http://localhost:3000/api/user 
+Content-Type: application/json
+Accept: */*
+
+{
+    "name":"test",
+    "email":"test@madhav.com",
+    "password":"123456",
+    "gender":"Male",
+    "phone":"9467512615"
+}
+
+###
+GET http://localhost:3000/api/country
+
+###
+GET http://localhost:3000/api/country/IN
+###
+# POST  http://localhost:3000/api/country
+# Content-Type: application/json
+# Accept: */*
+
+# {
+#     "name": "India",
+#     "code":"IN"
+# }
+
+###
+GET http://localhost:3000/api/city
+###
+GET http://localhost:3000/api/city/Hisar
+
+###
+POST  http://localhost:3000/api/address
+Content-Type: application/json
+Accept: */*
+
+{
+    "name":"test address",
+    "cityId":117,
+    "countryId":101,
+    "streetAddress":"Hissar 9467512615"
+}
+
+###
+POST  http://localhost:3000/api/hospital
+Content-Type: application/json
+Accept: */*
+
+{
+    "name":"test",
+    "imageUrl":"test@madhav.com",
+    "latitude":1.234567,
+    "longitude":1.2525,
+    "addressId":1
+}
+
+###
+PATCH  http://localhost:3000/api/user/5
+Content-Type: application/json
+Accept: */*
+
+{
+    "name":"test",
+    "email":"test@madhav.com",
+    "password":"1234567",
+    "gender":"Male",
+    "phone":"9467512615"
+}
+
+###
+GET   http://localhost:3000/api/category
+
+###
+POST  http://localhost:3000/api/category
+Content-Type: application/json
+Accept: */*
+
+{
+    "speciality": "Cardiologist"
+}
+
+
+###
+GET   http://localhost:3000/api/day
+
+###
+POST   http://localhost:3000/api/day
+Content-Type: application/json
+Accept: */*
+
+
+{
+    "day":"Friday",
+    "doctorInfoId":1
+}
+
+
+
+###
+POST http://localhost:3000/api/doctor 
+Content-Type: application/json
+Accept: */*
+
+{
+    "startTime":"9:00 AM",
+    "EndTime":"8:00 PM",
+    "fees":500,
+    "available":true,
+    "userId":2,
+    "categoryId":1,
+    "hospitalId":1
+
+}
+# bookingStatus	boolean [false]	
+# paymentStatus	boolean [false]	
+# time	text	
+# userId	integer	
+# doctorId	integer
+
+###
+POST http://localhost:3000/api/appointment 
+Content-Type: application/json
+Accept: */*
+
+{
+    "time": "9:00",
+    "userId": 5,
+    "doctorId": 1
+}
+
+
+
+###
+GET  http://localhost:3000/api/doctorWallet/1
+
+###
+POST http://localhost:3000/api/doctorWallet 
+Content-Type: application/json
+Accept: */*
+
+{
+    "amout":"0",
+    "doctorInfoId": 1
+}
+
+###
+PATCH  http://localhost:3000/api/doctorWallet
+Content-Type: application/json
+Accept: */*
+
+{   
+    "amout":"1234",
+    "doctorInfoId": 1
+}
+
+status	boolean [false]	
+time	character varying(255)	
+transId	text	
+upi	text	
+accountNo	text	
+doctorInfoId	integer
+
+###
+GET  http://localhost:3000/api/doctorWithdrawRequest
+
+###
+GET  http://localhost:3000/api/doctorWithdrawRequest/1
+
+###
+POST http://localhost:3000/api/doctorWithdrawRequest 
+Content-Type: application/json
+Accept: */*
+
+{
+    "time":"9:00",
+    "transId": "1",
+    "upi":"madhav@okaxis",
+    "accountNo":"22",
+    "doctorInfoId":1
+}
+
+###
+PATCH  http://localhost:3000/api/doctorWithdrawRequest/1
+Content-Type: application/json
+Accept: */*
+
+{   
+    "time":"9:00",
+    "transId": "1",
+    "upi":"madhav@okaxis",
+    "accountNo":"22",
+    "doctorInfoId":1,
+    "status":true
+}
