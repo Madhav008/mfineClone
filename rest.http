@@ -52,6 +52,9 @@ Accept: */*
     "countryId":101,
     "streetAddress":"Hissar 9467512615"
 }
+###
+  
+GET http://localhost:3000/api/hospital/1
 
 ###
 POST  http://localhost:3000/api/hospital

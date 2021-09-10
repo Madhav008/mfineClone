@@ -31,6 +31,10 @@ router.get("/hospital/:id", async (req, res, next) => {
       where: {
         id: Number(id),
       },
+      include: {
+        address: true,
+        DoctorInfo :true
+      },
     });
     res.json(hospital);
   } catch (err) {
