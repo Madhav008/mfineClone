@@ -1,9 +1,8 @@
 const router = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
-
+const bcrypt = require("bcrypt");
+const jwtGenerator = require("../jwt/jwt.generator");
 const prisma = new PrismaClient();
-
-
 
 router.get("/user", async (req, res, next) => {
   try {
@@ -17,11 +16,26 @@ router.get("/user", async (req, res, next) => {
 router.post("/user", async (req, res, next) => {
   try {
     const data = req.body;
+    const salt = await bcrypt.genSalt(11);
+
+    const bcryptPassword = await bcrypt.hash(data.password, salt);
+
     const user = await prisma.userProfile.create({
-      data: data,
+      data: {
+        email: data.email,
+        gender: data.gender,
+        name: data.name,
+        phone: data.phone,
+        password: bcryptPassword,
+      },
     });
 
-    res.json(user);
+    const token = jwtGenerator(user.id);
+
+    res.json({
+      token: token,
+      data: user,
+    });
   } catch (error) {
     next(error);
   }
@@ -59,6 +73,56 @@ router.delete("/user/:id", async (req, res, next) => {
     },
   });
   res.json(user);
+});
+
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    if (!email || !password) {
+      return res.status(400).json({
+        success: fasle,
+        error: "Check Email and Pass",
+      });
+    }
+
+    //   const user = await UserDetail.findOne({ email }).select("+password");
+    const user = await prisma.userProfile.findUnique({
+      where: {
+        email: email,
+      },
+
+      select: {
+        password: true,
+        id: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: fasle,
+        error: "Invalid Email and Pass",
+      });
+    }
+    const isMatched = await bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
+      return res.status(401).json({
+        success: fasle,
+        error: "Invalid Password",
+      });
+    }
+
+    const token = jwtGenerator(user.id);
+
+    res.json({
+      id: user.id,
+      token: token,
+      email: email,
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;
